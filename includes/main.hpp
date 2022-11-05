@@ -12,4 +12,6 @@
 #define SCREEN_WIDTH	500
 #define SCREEN_HEIGHT	500
 
+#define	WATER	(Color){0, 94, 184, 255}
+
 #endif // MAIN_HPP
