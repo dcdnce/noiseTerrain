@@ -9,7 +9,7 @@
 #include "FastNoiseLite.h"
 #include "myRaylib.hpp"
 
-#define SCREEN_WIDTH	700
-#define SCREEN_HEIGHT	700
+#define SCREEN_WIDTH	500
+#define SCREEN_HEIGHT	500
 
 #endif // MAIN_HPP

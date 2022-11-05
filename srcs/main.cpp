@@ -11,62 +11,72 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib_test");
     SetTargetFPS(60);
 
-	const int 	width = 100;
-	const int 	height = 100;
-	const int 	scl = 1;
+	// Map constants
+	const int 	width = 600;
+	const int 	height = 600;
+	const float	scl = 0.01f;
 	const float	minHeight = 0;
-	const float	maxHeight = width / 10;
+	const float	maxHeight = width * scl / 20;
 
-	// Create and configure FastNoise object
+	// FastNoise object configuration
+	std::vector<float>	noiseMap(width * height);
 	FastNoiseLite		noise;
-	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+	noise.SetSeed(1338);
+	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+	noise.SetFrequency(0.025f);
+	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+	noise.SetFractalOctaves(5);
+	noise.SetFractalLacunarity(2);
+	noise.SetFractalGain(0.4f);
+	noise.SetFractalWeightedStrength(-0.3);
+
 	// Map configuration
-	Vector3 map[height * width];
+	Vector3 render[height * width];
 	Vector3	v[4];
-	for (int y = 0 ; y < height; y++)
-		for (int x = 0 ; x < width; x++)
-			map[(y*height)+x] = {
+	uint8_t	cLerp;
+	for (int y = 0 ; y < height; y++) {
+		for (int x = 0 ; x < width; x++) {
+			noiseMap[y*height+x] = (noise.GetNoise((float)x, (float)y) + 1.0f) * 0.5f;
+			render[y*height+x] = {
 					(float)x * scl, 
-					lerp(minHeight, maxHeight, (float)noise.GetNoise((float)x, (float)y)), 
+					lerp(minHeight, maxHeight, noiseMap[y*height+x]), 
 					(float)y * scl
 			};
+		}
+	}
 
 	// Camera configuration
 	Camera3D camera = {0};
-	camera.position = map[height*width-1];
-	camera.position.y = (float)width;
-	camera.target = map[5*height+width/2];
-	camera.up = (Vector3){0,1,0};
+	camera.position = render[height*width-1];
+	camera.position.y = (float)-(width*scl);
+	camera.target = render[5*height+width/2];
+	camera.up = (Vector3){0,-1,0};
 	camera.fovy = 45.0f;
 	camera.projection = CAMERA_PERSPECTIVE;
 	SetCameraMode(camera, CAMERA_FREE);
 
-    // Main game loop
+    // Main loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
 	{
 		UpdateCamera(&camera);
-		// Draw ----------------
 		BeginDrawing();
-			ClearBackground(RAYWHITE);
+			ClearBackground(SKYBLUE);
 			BeginMode3D(camera);
 				for (int y = 0 ; y < height - 1; y++) {
 					for (int x = 0 ; x < width - 1; x++) {
-						v[0] = map[(y * height)+x];
-						v[1] = map[(y * height)+x+1];
-						v[2] = map[((y+1) * height)+x];
-						v[3] = map[((y+1) * height)+x+1];
-						DrawLine3D(v[0], v[1], BLACK);
-						DrawLine3D(v[1], v[3], BLACK);
-						DrawLine3D(v[3], v[2], BLACK);
-						DrawLine3D(v[2], v[0], BLACK);
-						DrawLine3D(v[2], v[1], BLACK);
-						//DrawTriangleStrip3D(v, 4, BLUE);
+						v[0] = render[y*height+x];
+						v[1] = render[y*height+x+1];
+						v[2] = render[(y+1)*height+x];
+						v[3] = render[(y+1)*height+x+1];
+
+						cLerp = lerp(0, 255, noiseMap[y*height+x]);
+						Color c = (Color){cLerp, cLerp, cLerp, 255};
+						DrawTriangleStrip3D(v, 4, c);
 					}
 				}
 			EndMode3D();
-			DrawFPS(10,10);
+			//DrawFPS(10,10);
 		EndDrawing();
-		//----------------
     }
 
     // De-Initialization
