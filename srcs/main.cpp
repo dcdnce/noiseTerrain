@@ -52,7 +52,7 @@ int main(void)
 						*/
 					}
 				}
-				DrawTriangleStrip3D(map, rows * cols, YELLOW);
+				DrawTriangleStrip3D(map, rows * cols, BLUE);
 				DrawGrid(100, 1);
 			EndMode3D();
 
