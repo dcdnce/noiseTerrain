@@ -9,9 +9,24 @@
 #include "FastNoiseLite.h"
 #include "myRaylib.hpp"
 
-#define SCREEN_WIDTH	500
-#define SCREEN_HEIGHT	500
+#define SCREEN_WIDTH	900
+#define SCREEN_HEIGHT	900
 
-#define	WATER	(Color){0, 94, 184, 255}
+#define	OCEAN	(Color){2, 75, 134, 255}
+#define	WATER	(Color){94, 207, 250, 255}
+#define	BEACH	(Color){255, 235, 205, 255}
+#define	LAND	(Color){169, 218, 63, 255}
+#define	ROCK	(Color){185,156,150, 255}
+#define	CLASSIC (Color){239,240,241, 255}
+
+// NOISE_CPP
+FastNoiseLite initNoise(const int seed);
+
+// TERRAIN_CPP
+Color 	biome(const float e);
+void	noiseTweaks(const int h, const int w, FastNoiseLite noise, std::vector<float> & noiseMap);
+
+// UTILS_CPP
+float lerp(const float lo, const float hi, const float t);
 
 #endif // MAIN_HPP

@@ -1,32 +1,6 @@
 #include "raylib.h"
 #include "main.hpp"
 
-static float lerp(const float lo, const float hi, const float t) {
-	return (lo * (1 - t) + hi * t);
-}
-
-static FastNoiseLite initNoise(int seed) {
-	FastNoiseLite		noise;
-
-	noise.SetSeed(seed);
-	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	noise.SetFrequency(0.01f);
-	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
-	noise.SetFractalOctaves(5);
-	noise.SetFractalLacunarity(2);
-	noise.SetFractalGain(0.5f);
-	noise.SetFractalWeightedStrength(0.1f);
-	return (noise);
-}
-
-static Color biome(float e) {
-	if (e < 0.2f)
-		return (WATER);
-	uint8_t	cLerp = lerp(0, 255, e);
-	Color classic = (Color){cLerp, cLerp, cLerp, 255};
-	return (classic);
-}
-
 int main(void)
 {
     // Initialization
@@ -38,23 +12,16 @@ int main(void)
 	const int 	height = 600;
 	const float	scl = 0.01f;
 	const float	minHeight = 0;
-	const float	maxHeight = 2.5f;
+	const float	maxHeight = 0.5f;
 
-	// FastNoise object configuration
+	// FastNoise object configuration.
 	std::vector<float>	noiseMap(width * height);
 	FastNoiseLite		noise = initNoise(1342);
 
-	// Elevation tweaks
-	float val;
-	for (int y = 0 ; y < height; y++) {
-		for (int x = 0 ; x < width; x++) {
-			val = (noise.GetNoise((float)x, (float)y) + 1.0f) * 0.5f;
-			val = pow(val * 1.2f, 3.0f); //Redistribution
-			noiseMap[y*height+x] = val;
-		}
-	}
+	// Compute noise map values -- terrain-like tweaks.
+	noiseTweaks(height, width, noise, noiseMap);	
 
-	// Render assign
+	// Noise map values assignation to rendered vectors.
 	Vector3 render[height * width];
 	Vector3	v[4];
 	for (int y = 0 ; y < height; y++)
