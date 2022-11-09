@@ -5,7 +5,7 @@ FastNoiseLite initNoise(const int seed) {
 
 	noise.SetSeed(seed);
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	noise.SetFrequency(0.03f);
+	noise.SetFrequency(0.01f);
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
 	noise.SetFractalOctaves(5);
 	noise.SetFractalLacunarity(2);

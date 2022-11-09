@@ -7,19 +7,22 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib_test");
     SetTargetFPS(60);
 
+	// Noise constants
 	// Map constants
 	const int 	width = 600;
 	const int 	height = 600;
 	const float	scl = 0.01f;
 	const float	minHeight = 0;
-	const float	maxHeight = 0.5f;
+	const float	maxHeight = 1;
 
 	// FastNoise object configuration.
-	std::vector<float>	noiseMap(width * height);
-	FastNoiseLite		noise = initNoise(1342);
+	std::vector<float>	elevationMap(width * height);
+	std::vector<float>	moistureMap(width * height);
+	FastNoiseLite		elevationNoise = initNoise(4);
+	FastNoiseLite		moistureNoise = initNoise(42);
 
 	// Compute noise map values -- terrain-like tweaks.
-	noiseTweaks(height, width, noise, noiseMap);	
+	noiseTweaks(height, width, elevationNoise, elevationMap);	
 
 	// Noise map values assignation to rendered vectors.
 	Vector3 render[height * width];
@@ -28,9 +31,14 @@ int main(void)
 		for (int x = 0 ; x < width; x++)
 			render[y*height+x] = {
 					(float)x * scl, 
-					0.0f - lerp(minHeight, maxHeight, noiseMap[y*height+x]), 
+					0.0f - lerp(minHeight, maxHeight, elevationMap[y*height+x]), 
 					(float)y * scl
 			};
+
+	// Moisture map values assignation.
+	for (int y = 0 ; y < height; y++)
+		for (int x = 0 ; x < width; x++)
+			moistureMap[y*height+x] = (moistureNoise.GetNoise((float)x, (float)y) + 1.0f ) * 0.5f;
 
 	// Camera configuration
 	Camera3D camera = {0};
@@ -55,7 +63,8 @@ int main(void)
 						v[1] = render[y*height+x+1];
 						v[2] = render[(y+1)*height+x];
 						v[3] = render[(y+1)*height+x+1];
-						DrawTriangleStrip3D(v, 4, biome(noiseMap[y*height+x]));
+						DrawTriangleStrip3D(v, 4, \
+							biome(elevationMap[y*height+x], moistureMap[y*height+x]));
 					}
 				}
 			EndMode3D();
