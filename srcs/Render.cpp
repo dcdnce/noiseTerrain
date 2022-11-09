@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include "Render.hpp"
 
 Render::Render(void) {
 		std::cout << "Render constructor called" << std::endl;

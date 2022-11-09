@@ -1,14 +1,10 @@
+#ifndef RENDER_HPP
+#define RENDER_HPP
 #include "main.hpp"
+#include "FastNoiseLite.h"
 
 class Render {
 	private:
-		/*
-		const int	_width;
-		const int	_height;
-		const float	_scl;
-		const float	_minHeight;
-		const float	_maxHeight;
-		*/
 
 	public:
 		int				 		_width;
@@ -32,3 +28,5 @@ class Render {
 		FastNoiseLite			moistureNoise;
 		std::vector<Vector3>	render;
 };
+
+#endif

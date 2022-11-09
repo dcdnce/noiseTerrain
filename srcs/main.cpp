@@ -1,5 +1,10 @@
-#include "raylib.h"
 #include "main.hpp"
+
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
+
+#include "FastNoiseLite.h"
+#include "Render.hpp"
 
 int main(void)
 {
@@ -45,6 +50,7 @@ int main(void)
 					}
 				}
 			EndMode3D();
+			float sliderValue = GuiSlider((Rectangle){ 355, 400, 165, 20 }, "TEST", TextFormat("%2.2f", (float)sliderValue), sliderValue, -50, 100);
 			//DrawFPS(10,10);
 		EndDrawing();
     }

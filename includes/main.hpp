@@ -6,9 +6,6 @@
 #include <vector>
 
 #include "raylib.h"
-#include "raygui.h"
-#include "FastNoiseLite.h"
-#include "Render.hpp"
 
 #define SCREEN_WIDTH	900
 #define SCREEN_HEIGHT	900
