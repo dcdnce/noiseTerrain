@@ -6,8 +6,9 @@
 #include <vector>
 
 #include "raylib.h"
+#include "raygui.h"
 #include "FastNoiseLite.h"
-#include "myRaylib.hpp"
+#include "Render.hpp"
 
 #define SCREEN_WIDTH	900
 #define SCREEN_HEIGHT	900
@@ -22,13 +23,7 @@
 #define	CLASSIC (Color){239,240,241, 255}
 
 #define BASE_FREQUENCY	0.01f
-
-// NOISE_CPP
-FastNoiseLite initNoise(const int seed);
-
-// TERRAIN_CPP
-Color	biome(const float e, const float m);
-void	noiseTweaks(const int h, const int w, FastNoiseLite noise, std::vector<float> & map);
+#define OCEAN_THRESHOLD 0.25f
 
 // UTILS_CPP
 float lerp(const float lo, const float hi, const float t);

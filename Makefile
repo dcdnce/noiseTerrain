@@ -1,7 +1,6 @@
 SRCS	=	srcs/main.cpp \
-			srcs/noise.cpp \
-			srcs/terrain.cpp \
-			srcs/utils.cpp
+			srcs/utils.cpp \
+			srcs/Render.cpp
 
 OBJS	=	$(SRCS:.cpp=.o)
 

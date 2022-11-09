@@ -7,49 +7,26 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib_test");
     SetTargetFPS(60);
 
-	// Noise constants
-	// Map constants
-	const int 	width = 600;
-	const int 	height = 600;
-	const float	scl = 0.01f;
-	const float	minHeight = 0;
-	const float	maxHeight = 1;
-
-	// FastNoise object configuration.
-	std::vector<float>	elevationMap(width * height);
-	std::vector<float>	moistureMap(width * height);
-	FastNoiseLite		elevationNoise = initNoise(4);
-	FastNoiseLite		moistureNoise = initNoise(42);
-
+	// Init both FastNoiseObject and both vector<float> noise map.
+	Render	r;
 	// Compute noise map values -- terrain-like tweaks.
-	noiseTweaks(height, width, elevationNoise, elevationMap);	
-
+	r.elevationAssign();
+	// Moisture noise values assignation to moisture map;
+	r.moistureAssign();
 	// Noise map values assignation to rendered vectors.
-	Vector3 render[height * width];
-	Vector3	v[4];
-	for (int y = 0 ; y < height; y++)
-		for (int x = 0 ; x < width; x++)
-			render[y*height+x] = {
-					(float)x * scl, 
-					0.0f - lerp(minHeight, maxHeight, elevationMap[y*height+x]), 
-					(float)y * scl
-			};
-
-	// Moisture map values assignation.
-	for (int y = 0 ; y < height; y++)
-		for (int x = 0 ; x < width; x++)
-			moistureMap[y*height+x] = (moistureNoise.GetNoise((float)x, (float)y) + 1.0f ) * 0.5f;
-
+	r.assignRender();
+	
 	// Camera configuration
 	Camera3D camera = {0};
-	camera.position = render[height*width-1];
-	camera.position.y = (float)-(width*scl);
-	camera.target = render[5*height+width/2];
+	camera.position = r.render[r._height*r._width-1];
+	camera.position.y = (float)-(r._width*r._scl);
+	camera.target = r.render[5*r._height+r._width/2];
 	camera.up = (Vector3){0,-1,0};
 	camera.fovy = 45.0f;
 	camera.projection = CAMERA_PERSPECTIVE;
 	SetCameraMode(camera, CAMERA_FREE);
 
+	Vector3	v[4];
     // Main loop && map render
     while (!WindowShouldClose())    // Detect window close button or ESC key
 	{
@@ -57,14 +34,14 @@ int main(void)
 		BeginDrawing();
 			ClearBackground(SKYBLUE);
 			BeginMode3D(camera);
-				for (int y = 0 ; y < height - 1; y++) {
-					for (int x = 0 ; x < width - 1; x++) {
-						v[0] = render[y*height+x];
-						v[1] = render[y*height+x+1];
-						v[2] = render[(y+1)*height+x];
-						v[3] = render[(y+1)*height+x+1];
+				for (int y = 0 ; y < r._height - 1; y++) {
+					for (int x = 0 ; x < r._width - 1; x++) {
+						v[0] = r.render[y*r._height+x];
+						v[1] = r.render[y*r._height+x+1];
+						v[2] = r.render[(y+1)*r._height+x];
+						v[3] = r.render[(y+1)*r._height+x+1];
 						DrawTriangleStrip3D(v, 4, \
-							biome(elevationMap[y*height+x], moistureMap[y*height+x]));
+							r.biome(r.elevationMap[y*r._height+x], r.moistureMap[y*r._height+x]));
 					}
 				}
 			EndMode3D();
