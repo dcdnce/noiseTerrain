@@ -39,9 +39,20 @@ void	checkGui(std::map<std::string, float> & guiValues, Render & r) {
 	if (GuiValueBox((Rectangle){100, 110, 165, 15}, "Seed ", &r.seed, 0, 99999999, valueBox000))
 		valueBox000 = !valueBox000;
 
+	guiValues["islandFactor"] = GuiSlider((Rectangle){100,130,165,15}, "SquareBump val", \
+		TextFormat("%1.5f", guiValues["islandFactor"]), r.islandFactor, 0, 1);
+
+
 	if (guiValues["maxHeight"] != r._maxHeight) {
 		r._maxHeight = guiValues["maxHeight"];
 		assignRender = true;
+	}
+
+	if (guiValues["islandFactor"] != r.islandFactor) {
+		r.islandFactor = guiValues["islandFactor"];
+		elevationAssign = true;
+		moistureAssign = true;
+		refreshNoises = true;
 	}
 
 	if (guiValues["frequency"] != r.frequency) {
@@ -115,6 +126,7 @@ int main(void)
 	guiValues["octaves"] = r.octaves;
 	guiValues["noiseTypeIndex"] = r.noiseTypeIndex;
 	guiValues["seed"] = r.seed;
+	guiValues["islandFactor"] = r.islandFactor;
     // Main loop && map render
     while (!WindowShouldClose())    // Detect window close button or ESC key
 	{

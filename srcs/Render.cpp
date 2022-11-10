@@ -8,6 +8,7 @@ Render::Render(void) {
 		this->_minHeight = 0;
 		this->_maxHeight = 1;
 
+		this->islandFactor = 0.5f;
 		this->seed = 42;
 		this->frequency = 0.008f;
 		this->octaves = 5;
@@ -65,16 +66,25 @@ void	Render::refreshNoises(void) {
  * Compute the results in the corresponding map.
  */
 void	Render::elevationAssign(void) {
-	float val;
+	float e;
 	int	h = this->_height;
 	int	w = this->_width;
 
 	for (int y = 0 ; y < h; y++) {
 		for (int x = 0 ; x < w; x++) {
-			val = (this->elevationNoise.GetNoise((float)x, (float)y) + 1.0f) * 0.5f;
-			val = pow(val * 1.2f, 2.2f); //Redistribution
-			if (val < OCEAN_THRESHOLD) val = OCEAN_THRESHOLD - 0.01f; // Flat ocean
-			this->elevationMap[y*h+x] = val;
+			e = (this->elevationNoise.GetNoise((float)x, (float)y) + 1.0f) * 0.5f;
+			e = pow(e * 1.2f, 2.2f); //Redistribution
+			// Square Bump
+			//d = 1 - (1-nx²) * (1-ny²)	
+			//e = (e + (1-d)) / 2
+			
+			float nx = 2.0f * x / w - 1.0f;
+			float ny = 2.0f * y / h - 1.0f;
+			float d = 1.0f - (1.0f - pow(nx, 2)) * (1.0f - pow(ny, 2));
+			e = (e + (this->islandFactor - d)) / 2.0f;	
+			
+			if (e < OCEAN_THRESHOLD) e = OCEAN_THRESHOLD - 0.01f; // Flat ocean
+			this->elevationMap[y*h+x] = e;
 		}
 	}
 	std::cout << "Render::elevationAssign called" << std::endl;

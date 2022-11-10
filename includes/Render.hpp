@@ -18,6 +18,8 @@ class Render {
 		int							octaves;
 		int							noiseTypeIndex;
 		std::vector<std::string>	noiseTypeNames;
+		float						islandFactor;
+		bool						islandFactorToggle;
 
 		Render(void);
 		~Render(void);
