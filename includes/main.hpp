@@ -7,7 +7,7 @@
 
 #include "raylib.h"
 
-#define SCREEN_WIDTH	900
+#define SCREEN_WIDTH	1200
 #define SCREEN_HEIGHT	900
 
 #define	OCEAN	(Color){2, 75, 134, 255}

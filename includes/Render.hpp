@@ -7,20 +7,27 @@ class Render {
 	private:
 
 	public:
-		int				 		_width;
-		int				 		_height;
-		float			 		_scl;
-		float			 		_minHeight;
-		float			 		_maxHeight;
+		int			_width;
+		int			_height;
+		float		_scl;
+		float		_minHeight;
+		float		_maxHeight;
+		
+		int							seed;
+		float						frequency;
+		int							octaves;
+		int							noiseTypeIndex;
+		std::vector<std::string>	noiseTypeNames;
 
 		Render(void);
 		~Render(void);
-		FastNoiseLite	initNoise(const int seed);
 
-		void	elevationAssign(void);
-		void	moistureAssign(void);
-		Color	biome(const float e, const float m);
-		void	assignRender(void);
+		FastNoiseLite	initNoise(void);
+		void			refreshNoises(void);
+		void			elevationAssign(void);
+		void			moistureAssign(void);
+		Color			biome(const float e, const float m);
+		void			assignRender(void);
 
 		std::vector<float>		elevationMap;
 		std::vector<float>		moistureMap;

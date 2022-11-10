@@ -8,10 +8,21 @@ Render::Render(void) {
 		this->_minHeight = 0;
 		this->_maxHeight = 1;
 
+		this->seed = 42;
+		this->frequency = 0.008f;
+		this->octaves = 5;
+		this->noiseTypeNames.push_back("OpenSimplex2");
+		this->noiseTypeNames.push_back("OpenSimplex2S");
+		this->noiseTypeNames.push_back("Cellular");
+		this->noiseTypeNames.push_back("Perlin");
+		this->noiseTypeNames.push_back("ValueCubic");
+		this->noiseTypeNames.push_back("Value");
+		this->noiseTypeIndex = 3;
+
 		elevationMap = std::vector<float>(this->_width * this->_height);
 		moistureMap = std::vector<float>(this->_width * this->_height);
-		elevationNoise = initNoise(4);
-		moistureNoise = initNoise(42);
+		elevationNoise = initNoise();
+		moistureNoise = initNoise();
 		render = std::vector<Vector3>(this->_width * this->_height);
 }
 
@@ -26,19 +37,27 @@ Render::~Render(void) {
  * @brief Init a FastNoiseLite object.
  * @param int - seed of noise object.
  */
-FastNoiseLite Render::initNoise(const int seed) {
+FastNoiseLite Render::initNoise(void) {
 	FastNoiseLite		noise;
 
 	std::cout << "Render::initNoise called" << std::endl;
-	noise.SetSeed(seed);
-	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	noise.SetFrequency(0.008f);
+	noise.SetSeed(this->seed);
+	noise.SetNoiseType(FastNoiseLite::NoiseType(this->noiseTypeIndex));
+	noise.SetFrequency(this->frequency);
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
-	noise.SetFractalOctaves(5);
+	noise.SetFractalOctaves(this->octaves);
 	noise.SetFractalLacunarity(2);
 	noise.SetFractalGain(0.5f);
 	noise.SetFractalWeightedStrength(0.1f);
 	return (noise);
+}
+
+/**
+ * @brief Actualize the FastNoiseLite objects after gui interaction
+ * */
+void	Render::refreshNoises(void) {
+	elevationNoise = initNoise();
+	moistureNoise = initNoise();
 }
 
 /**
