@@ -1,6 +1,7 @@
 SRCS	=	srcs/main.cpp \
 			srcs/utils.cpp \
-			srcs/Render.cpp
+			srcs/Render.cpp \
+			srcs/gui.cpp
 
 OBJS	=	$(SRCS:.cpp=.o)
 
