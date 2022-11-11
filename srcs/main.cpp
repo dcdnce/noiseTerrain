@@ -12,6 +12,19 @@
 #include <sstream>
 #include <iterator>
 
+Camera3D cameraConfiguration(Render r) {
+	Camera3D camera = {0};
+
+	camera.position = r.render[r._height*r._width-1];
+	camera.position.y = (float)-(r._width*r._scl);
+	camera.target = r.render[5*r._height+r._width/2];
+	camera.up = (Vector3){0,-1,0};
+	camera.fovy = 45.0f;
+	camera.projection = CAMERA_PERSPECTIVE;
+	SetCameraMode(camera, CAMERA_FREE);
+	return (camera);
+}
+
 int main(void)
 {
     // Initialization
@@ -28,26 +41,14 @@ int main(void)
 	r.assignRender();
 	
 	// Camera configuration
-	Camera3D camera = {0};
-	camera.position = r.render[r._height*r._width-1];
-	camera.position.y = (float)-(r._width*r._scl);
-	camera.target = r.render[5*r._height+r._width/2];
-	camera.up = (Vector3){0,-1,0};
-	camera.fovy = 45.0f;
-	camera.projection = CAMERA_PERSPECTIVE;
-	SetCameraMode(camera, CAMERA_FREE);
-
+	Camera3D camera = cameraConfiguration(r);
+	
+	int	x;
+	int	y;
 	Vector3	v[4];
-	//float	scaleSlider = 0;
-	std::map<std::string, float> guiValues;
-	guiValues["maxHeight"] = r._maxHeight;
-	guiValues["frequency"] = r.frequency;
-	guiValues["octaves"] = r.octaves;
-	guiValues["noiseTypeIndex"] = r.noiseTypeIndex;
-	guiValues["seed"] = r.seed;
-	guiValues["islandFactor"] = r.islandFactor;
+	std::map<std::string, float> guiValues = initGui(r);
 
-    // Main loop && map render
+    // Main loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
 	{
 		UpdateCamera(&camera);
@@ -62,8 +63,8 @@ int main(void)
 		BeginDrawing();
 			ClearBackground(SKYBLUE);
 			BeginMode3D(camera);
-				for (int y = 0 ; y < r._height - 1; y++) {
-					for (int x = 0 ; x < r._width - 1; x++) {
+				for (y = 0 ; y < r._height - 1; y++) {
+					for (x = 0 ; x < r._width - 1; x++) {
 						v[0] = r.render[y*r._height+x];
 						v[1] = r.render[y*r._height+x+1];
 						v[2] = r.render[(y+1)*r._height+x];
@@ -73,7 +74,7 @@ int main(void)
 					}
 				}
 			EndMode3D();
-			checkGui(guiValues, r);
+			refreshGui(guiValues, r);
 			//DrawFPS(10,10);
 		EndDrawing();
     }

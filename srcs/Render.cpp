@@ -9,6 +9,7 @@ Render::Render(void) {
 		this->_maxHeight = 1;
 
 		this->islandFactor = 0.5f;
+		this->islandFactorToggle = false;
 		this->seed = 42;
 		this->frequency = 0.008f;
 		this->octaves = 5;
@@ -54,7 +55,7 @@ FastNoiseLite Render::initNoise(void) {
 }
 
 /**
- * @brief Actualize the FastNoiseLite objects after gui interaction
+ * @brief Refresh the FastNoiseLite objects after gui interaction
  * */
 void	Render::refreshNoises(void) {
 	elevationNoise = initNoise();
@@ -69,20 +70,20 @@ void	Render::elevationAssign(void) {
 	float e;
 	int	h = this->_height;
 	int	w = this->_width;
+	float	nx;
+	float	ny;
+	float	d;
 
 	for (int y = 0 ; y < h; y++) {
 		for (int x = 0 ; x < w; x++) {
 			e = (this->elevationNoise.GetNoise((float)x, (float)y) + 1.0f) * 0.5f;
 			e = pow(e * 1.2f, 2.2f); //Redistribution
-			// Square Bump
-			//d = 1 - (1-nx²) * (1-ny²)	
-			//e = (e + (1-d)) / 2
-			
-			float nx = 2.0f * x / w - 1.0f;
-			float ny = 2.0f * y / h - 1.0f;
-			float d = 1.0f - (1.0f - pow(nx, 2)) * (1.0f - pow(ny, 2));
-			e = (e + (this->islandFactor - d)) / 2.0f;	
-			
+			if (this->islandFactorToggle) { // Square bump function
+				nx = 2.0f * x / w - 1.0f;
+				ny = 2.0f * y / h - 1.0f;
+				d = 1.0f - (1.0f - pow(nx, 2)) * (1.0f - pow(ny, 2));
+				e = (e + (this->islandFactor - d)) / 2.0f;	
+			}
 			if (e < OCEAN_THRESHOLD) e = OCEAN_THRESHOLD - 0.01f; // Flat ocean
 			this->elevationMap[y*h+x] = e;
 		}
@@ -121,12 +122,10 @@ Color Render::biome(const float e, const float m) {
 		if (m < 0.4f) return (BEACH);
 		return (LAND);
 	}
-
 	if (e < 0.5f){
 		if (m < 0.4f) return (LAND);
-			return (FOREST);
+		return (FOREST);
 	}
-
 	if (e < 0.7f) {
 		return (ROCK);
 	}

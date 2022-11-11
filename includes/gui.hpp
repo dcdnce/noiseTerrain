@@ -4,6 +4,7 @@
 #include "Render.hpp"
 #include <map>
 
-void	checkGui(std::map<std::string, float> & guiValues, Render & r);
+std::map<std::string, float> 	initGui(Render r);
+void							refreshGui(std::map<std::string, float> & guiValues, Render & r);
 
 #endif
