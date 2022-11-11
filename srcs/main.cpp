@@ -131,6 +131,14 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
 	{
 		UpdateCamera(&camera);
+		if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
+ 		{
+            if (IsWindowFullscreen())
+                SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            else
+                SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
+ 			ToggleFullscreen();
+ 		}
 		BeginDrawing();
 			ClearBackground(SKYBLUE);
 			BeginMode3D(camera);
