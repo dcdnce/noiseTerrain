@@ -12,6 +12,17 @@
 #include <sstream>
 #include <iterator>
 
+void	checkEvents(void) {
+	if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
+	{
+		if (IsWindowFullscreen())
+			SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		else
+			SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
+		ToggleFullscreen();
+	}
+}
+
 Camera3D cameraConfiguration(Render r) {
 	Camera3D camera = {0};
 
@@ -52,14 +63,7 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
 	{
 		UpdateCamera(&camera);
-		if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
- 		{
-            if (IsWindowFullscreen())
-                SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-            else
-                SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
- 			ToggleFullscreen();
- 		}
+		checkEvents();	
 		BeginDrawing();
 			ClearBackground(SKYBLUE);
 			BeginMode3D(camera);
@@ -79,7 +83,6 @@ int main(void)
 		EndDrawing();
     }
 
-    // De-Initialization
     CloseWindow();        // Close window and OpenGL context
     return (0);
 }
