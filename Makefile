@@ -22,7 +22,7 @@ else
 	LFLAGS = -L/usr/local/lib -lraylib
 endif
 
-NAME	=	raylib_test
+NAME	=	noiseTerrain
 
 all:	$(NAME)
 

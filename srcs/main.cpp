@@ -39,7 +39,7 @@ Camera3D cameraConfiguration(Render r) {
 int main(void)
 {
     // Initialization
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib_test");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "noiseTerrain");
     SetTargetFPS(60);
 
 	// Init both FastNoiseObject and both vector<float> noise map.

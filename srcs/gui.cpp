@@ -1,5 +1,6 @@
 #include <map>
 
+#include "raylib.h"
 #define RAYGUI_STATIC
 #include "raygui.h"
 
@@ -22,7 +23,6 @@ std::map<std::string, float> initGui(Render r) {
 void	refreshGui(std::map<std::string, float> & guiValues, Render & r) {
 	static bool			dropDown000 = false;
 	static bool			valueBox000 = false;
-	static bool			checkBox000 = false;
 	static std::string	dropdownBox = "";
 	if (!dropdownBox.size()) {
 		for (size_t i = 0 ; i < r.noiseTypeNames.size() ; i++) {
@@ -30,6 +30,7 @@ void	refreshGui(std::map<std::string, float> & guiValues, Render & r) {
 			if (i+1 != r.noiseTypeNames.size()) dropdownBox += ";";
 		}
 	}
+	static std::string	tips = "Alt+Enter to toggle fullscreen\nMB2 to scroll and move\nAlt+MB2 to rotate";
 
 	// Gui render and value storage
 	// Begin -------------------------------------------------------------------
@@ -53,7 +54,10 @@ void	refreshGui(std::map<std::string, float> & guiValues, Render & r) {
 	if (GuiDropdownBox((Rectangle){100,140,150,15}, dropdownBox.c_str(), &r.noiseTypeIndex, dropDown000))
 		dropDown000 = !dropDown000;
 
-	GuiLabel((Rectangle){40,160,200,15}, "Alt+Enter to toggle fullscreen");
+	if (IsWindowFullscreen())
+		GuiLabel((Rectangle){10,(float)GetMonitorHeight(GetCurrentMonitor())-40,200,15}, tips.c_str());
+	else
+		GuiLabel((Rectangle){10,SCREEN_HEIGHT-40,200,15}, tips.c_str());
 	// End -------------------------------------------------------------------
 
 	// Render refresh
