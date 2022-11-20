@@ -26,10 +26,10 @@ class Render {
 
 		FastNoiseLite	initNoise(void);
 		void			refreshNoises(void);
-		void			elevationAssign(void);
-		void			moistureAssign(void);
-		Color			biome(const float e, const float m);
-		void			assignRender(void);
+		void			storeElevationNoise(void);
+		void			storeMoistureNoise(void);
+		void			elevationToRender();
+		Color			whichBiome(const float e, const float m);
 
 		std::vector<float>		elevationMap;
 		std::vector<float>		moistureMap;

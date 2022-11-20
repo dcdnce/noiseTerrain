@@ -44,12 +44,15 @@ int main(void)
 
 	// Init both FastNoiseObject and both vector<float> noise map.
 	Render	r;
+	
+	// Init the two FastNoiseLite objects.
+	r.refreshNoises();
 	// Compute elevationNoise values to elevationMap -- with terrain-like tweaks.
-	r.elevationAssign();
+	r.storeElevationNoise();
 	// moistureNoise values assignation to moistureMap;
-	r.moistureAssign();
+	r.storeMoistureNoise();
 	// elevationMap values assignation to rendered vectors.
-	r.assignRender();
+	r.elevationToRender();
 	
 	// Camera configuration
 	Camera3D camera = cameraConfiguration(r);
@@ -57,7 +60,7 @@ int main(void)
 	int	x;
 	int	y;
 	Vector3	v[4];
-	std::map<std::string, float> guiValues = initGui(r);
+	std::map<std::string, float> guiValues = Gui::init(r);
 
     // Main loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -74,12 +77,12 @@ int main(void)
 						v[2] = r.render[(y+1)*r._height+x];
 						v[3] = r.render[(y+1)*r._height+x+1];
 						DrawTriangleStrip3D(v, 4, \
-							r.biome(r.elevationMap[y*r._height+x], r.moistureMap[y*r._height+x]));
+							r.whichBiome(r.elevationMap[y*r._height+x], r.moistureMap[y*r._height+x]));
 					}
 				}
 			EndMode3D();
-			refreshGui(guiValues, r);
-			//DrawFPS(10,10);
+			Gui::render(guiValues, r);
+			Gui::refresh(guiValues, r);
 		EndDrawing();
     }
 

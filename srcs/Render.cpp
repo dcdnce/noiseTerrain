@@ -2,8 +2,8 @@
 
 Render::Render(void) {
 		std::cout << "Render constructor called" << std::endl;
-		this->_width = 600;
-		this->_height = 600;
+		this->_width = 400;
+		this->_height = 400;
 		this->_scl = 0.01f;
 		this->_minHeight = 0;
 		this->_maxHeight = 1;
@@ -23,8 +23,6 @@ Render::Render(void) {
 
 		elevationMap = std::vector<float>(this->_width * this->_height);
 		moistureMap = std::vector<float>(this->_width * this->_height);
-		elevationNoise = initNoise();
-		moistureNoise = initNoise();
 		render = std::vector<Vector3>(this->_width * this->_height);
 }
 
@@ -42,7 +40,6 @@ Render::~Render(void) {
 FastNoiseLite Render::initNoise(void) {
 	FastNoiseLite		noise;
 
-	std::cout << "Render::initNoise called" << std::endl;
 	noise.SetSeed(this->seed);
 	noise.SetNoiseType(FastNoiseLite::NoiseType(this->noiseTypeIndex));
 	noise.SetFrequency(this->frequency);
@@ -55,7 +52,7 @@ FastNoiseLite Render::initNoise(void) {
 }
 
 /**
- * @brief Refresh the FastNoiseLite objects after gui interaction
+ * @brief Refresh or init the FastNoiseLite objects.
  * */
 void	Render::refreshNoises(void) {
 	elevationNoise = initNoise();
@@ -66,7 +63,7 @@ void	Render::refreshNoises(void) {
  * @brief Tweaks the base elevation noise to more terrain-like values.
  * Compute the results in the corresponding map.
  */
-void	Render::elevationAssign(void) {
+void	Render::storeElevationNoise(void) {
 	float e;
 	int	h = this->_height;
 	int	w = this->_width;
@@ -88,20 +85,18 @@ void	Render::elevationAssign(void) {
 			this->elevationMap[y*h+x] = e;
 		}
 	}
-	std::cout << "Render::elevationAssign called" << std::endl;
 }
 
 /**
  * @brief Compute the moisture noise values in the corresponding map.
  */
-void	Render::moistureAssign(void) {
+void	Render::storeMoistureNoise(void) {
 	const int	h = this->_height;
 	const int	w = this->_width;
 
 	for (int y = 0 ; y < h; y++)
 		for (int x = 0 ; x < w; x++)
 			this->moistureMap[y*h+x] = (this->moistureNoise.GetNoise((float)x, (float)y) + 1.0f ) * 0.5f;
-	std::cout << "Render::moistureAssign called" << std::endl;
 }
 /** 
  * @brief Output a color depending on noise value;
@@ -110,7 +105,7 @@ void	Render::moistureAssign(void) {
  * @param m - moisture noise value to biome to.
  * @return Color
  */
-Color Render::biome(const float e, const float m) {
+Color Render::whichBiome(const float e, const float m) {
 	if (e < OCEAN_THRESHOLD)
 		return (OCEAN);
 	if (e < 0.26f)
@@ -135,7 +130,7 @@ Color Render::biome(const float e, const float m) {
 /**
  * @brief Assignation of the elevationMap values to the soon to be rendered vertex.
  */
-void	Render::assignRender(void) {
+void	Render::elevationToRender(void) {
 	const int	h =  this->_height;
 	const int	w =  this->_width;
 
@@ -146,5 +141,4 @@ void	Render::assignRender(void) {
 					0.0f - lerp(this->_minHeight, this->_maxHeight, this->elevationMap[y*h+x]), 
 					(float)y * this->_scl
 			};
-	std::cout << "Render::assignRender called" << std::endl;
 }

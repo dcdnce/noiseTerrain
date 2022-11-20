@@ -4,7 +4,11 @@
 #include "Render.hpp"
 #include <map>
 
-std::map<std::string, float> 	initGui(Render r);
-void							refreshGui(std::map<std::string, float> & guiValues, Render & r);
+namespace Gui {
+	std::map<std::string, float> 	init(Render r);
+	void							render(std::map<std::string, float> & guiValues, Render & r);
+	void							refresh(std::map<std::string, float> & guiValues, Render & r);
+}
+
 
 #endif
