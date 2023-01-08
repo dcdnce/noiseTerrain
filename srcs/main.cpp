@@ -68,10 +68,11 @@ int main(void)
 			ClearBackground(SKYBLUE);
 			BeginMode3D(camera);
 				r.drawTerrain();	
-				r.drawMarchingSquares();	
 			EndMode3D();
-			Gui::render(guiValues, r);
-			Gui::refresh(guiValues, r);
+			if (!IsWindowFullscreen()) {
+				Gui::render(guiValues, r);
+				Gui::refresh(guiValues, r);
+			}
 		EndDrawing();
     }
 

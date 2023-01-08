@@ -31,7 +31,6 @@ class Render {
 		void			elevationToRender();
 		Color			whichBiome(const float e, const float m);
 		void			drawTerrain(void);
-		void			drawMarchingSquares(void);
 
 		std::vector<float>		elevationMap;
 		std::vector<float>		moistureMap;
