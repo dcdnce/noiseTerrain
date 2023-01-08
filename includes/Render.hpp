@@ -7,9 +7,9 @@ class Render {
 	private:
 
 	public:
-		int			_width;
-		int			_height;
-		float		_scl;
+		int			_w;
+		int			_h;
+		float		_res;
 		float		_minHeight;
 		float		_maxHeight;
 		
@@ -31,6 +31,7 @@ class Render {
 		void			elevationToRender();
 		Color			whichBiome(const float e, const float m);
 		void			drawTerrain(void);
+		void			drawMarchingSquares(void);
 
 		std::vector<float>		elevationMap;
 		std::vector<float>		moistureMap;

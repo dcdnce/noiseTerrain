@@ -26,9 +26,9 @@ void	checkEvents(void) {
 Camera3D cameraConfiguration(Render r) {
 	Camera3D camera = {0};
 
-	camera.position = r.render[r._height*r._width-1];
-	camera.position.y = (float)-(r._width*r._scl);
-	camera.target = r.render[5*r._height+r._width/2];
+	camera.position = r.render[r._h*r._w-1];
+	camera.position.y = (float)-(r._w*r._res);
+	camera.target = r.render[5*r._h+r._w/2];
 	camera.up = (Vector3){0,-1,0};
 	camera.fovy = 45.0f;
 	camera.projection = CAMERA_PERSPECTIVE;
@@ -68,6 +68,7 @@ int main(void)
 			ClearBackground(SKYBLUE);
 			BeginMode3D(camera);
 				r.drawTerrain();	
+				r.drawMarchingSquares();	
 			EndMode3D();
 			Gui::render(guiValues, r);
 			Gui::refresh(guiValues, r);

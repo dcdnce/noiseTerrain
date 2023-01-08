@@ -2,9 +2,9 @@
 
 Render::Render(void) {
 		std::cout << "Render constructor called" << std::endl;
-		this->_width = 400;
-		this->_height = 400;
-		this->_scl = 0.01f;
+		this->_w = 400;
+		this->_h = 400;
+		this->_res = 0.01f;
 		this->_minHeight = 0;
 		this->_maxHeight = 1;
 
@@ -21,9 +21,9 @@ Render::Render(void) {
 		this->noiseTypeNames.push_back("Value");
 		this->noiseTypeIndex = 3;
 
-		elevationMap = std::vector<float>(this->_width * this->_height);
-		moistureMap = std::vector<float>(this->_width * this->_height);
-		render = std::vector<Vector3>(this->_width * this->_height);
+		elevationMap = std::vector<float>(this->_w * this->_h);
+		moistureMap = std::vector<float>(this->_w * this->_h);
+		render = std::vector<Vector3>(this->_w * this->_h);
 }
 
 Render::~Render(void) {
@@ -65,8 +65,8 @@ void	Render::refreshNoises(void) {
  */
 void	Render::storeElevationNoise(void) {
 	float e;
-	int	h = this->_height;
-	int	w = this->_width;
+	int	h = this->_h;
+	int	w = this->_w;
 	float	nx;
 	float	ny;
 	float	d;
@@ -92,8 +92,8 @@ void	Render::storeElevationNoise(void) {
  * @brief Compute the moisture noise values in the corresponding map.
  */
 void	Render::storeMoistureNoise(void) {
-	const int	h = this->_height;
-	const int	w = this->_width;
+	const int	h = this->_h;
+	const int	w = this->_w;
 
 	for (int y = 0 ; y < h; y++)
 		for (int x = 0 ; x < w; x++)
@@ -129,35 +129,53 @@ Color Render::whichBiome(const float e, const float m) {
 }
 
 /**
- * @brief Assignation of the elevationMap values to the soon to be rendered vertex.
+ * @brief Assignation of the elevationMap values to the soon to be rendered vertices.
  */
 void	Render::elevationToRender(void) {
-	const int	h =  this->_height;
-	const int	w =  this->_width;
-
-	for (int y = 0 ; y < h; y++)
-		for (int x = 0 ; x < w; x++)
-			render[y*h+x] = {
-					(float)x * this->_scl, 
-					0.0f - lerp(this->_minHeight, this->_maxHeight, this->elevationMap[y*h+x]), 
-					(float)y * this->_scl
+	for (int y = 0 ; y < _h; y++)
+		for (int x = 0 ; x < _w; x++)
+			render[y*_w+x] = {
+					(float)x * this->_res, 
+					0.0f - lerp(this->_minHeight, this->_maxHeight, this->elevationMap[y*_h+x]), 
+					(float)y * this->_res
 			};
 }
 
 void	Render::drawTerrain(void) {
 	Vector3	v[4];
 
-	for (int y = 0 ; y < this->_height - 1; y++) {
-		for (int x = 0 ; x < this->_width - 1; x++) {
-			v[0] = this->render[y*this->_height+x];
-			v[1] = this->render[y*this->_height+x+1];
-			v[2] = this->render[(y+1)*this->_height+x];
-			v[3] = this->render[(y+1)*this->_height+x+1];
+	for (int y = 0 ; y < this->_h - 1; y++) {
+		for (int x = 0 ; x < this->_w - 1; x++) {
+			v[0] = this->render[y*this->_w+x];
+			v[1] = this->render[y*this->_w+x+1];
+			v[2] = this->render[(y+1)*this->_w+x];
+			v[3] = this->render[(y+1)*this->_w+x+1];
 			//DrawTriangleStrip3D(v, 4, \
-			//	r.whichBiome(r.elevationMap[y*r._height+x], r.moistureMap[y*r._height+x]));
-			unsigned char e = lerp(0, 255, this->elevationMap[y*this->_height+x]);
+			//	r.whichBiome(r.elevationMap[y*r._h+x], r.moistureMap[y*r._h+x]));
+			unsigned char e = lerp(0, 255, this->elevationMap[y*this->_h+x]);
 			Color c = {e, e, e, 255};
 			DrawTriangleStrip3D(v, 4, c);
+		}
+	}
+}
+
+void	Render::drawMarchingSquares(void) {
+	//elevationMap
+	//get a b c d
+	const float hres = this->_res * 0.5f;
+	Vector3	v[4];
+
+	for (int y = 0 ; y < this->_h - 1; y++) {
+		for (int x = 0 ; x < this->_w - 1; x++) {
+			v[0] = this->render[y*_w+x];
+			v[1] = this->render[y*_w+x+1];
+			v[2] = this->render[(y+1)*_w+x+1];
+			v[3] = this->render[(y+1)*_w+x];
+
+			Vector3 a = {(float)x + hres, fabs(v[0].y - v[1].y), y		};
+			Vector3 b = {(float)x + _res, fabs(v[1].y - v[2].y), y + hres};
+			Vector3 c = {(float)x + hres, fabs(v[2].y - v[3].y), y + _res};
+			Vector3 d = {(float)x		, fabs(v[3].y - v[0].y), y + hres};
 		}
 	}
 }
