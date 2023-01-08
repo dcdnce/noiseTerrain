@@ -36,20 +36,6 @@ Camera3D cameraConfiguration(Render r) {
 	return (camera);
 }
 
-void drawTerrain(Render & r) {
-	Vector3	v[4];
-	for (int y = 0 ; y < r._height - 1; y++) {
-		for (int x = 0 ; x < r._width - 1; x++) {
-			v[0] = r.render[y*r._height+x];
-			v[1] = r.render[y*r._height+x+1];
-			v[2] = r.render[(y+1)*r._height+x];
-			v[3] = r.render[(y+1)*r._height+x+1];
-			DrawTriangleStrip3D(v, 4, \
-				r.whichBiome(r.elevationMap[y*r._height+x], r.moistureMap[y*r._height+x]));
-		}
-	}
-}
-
 int main(void)
 {
     // Initialization
@@ -81,10 +67,10 @@ int main(void)
 		BeginDrawing();
 			ClearBackground(SKYBLUE);
 			BeginMode3D(camera);
-				drawTerrain(r);	
+				r.drawTerrain();	
 			EndMode3D();
-			// Gui::render(guiValues, r);
-			// Gui::refresh(guiValues, r);
+			Gui::render(guiValues, r);
+			Gui::refresh(guiValues, r);
 		EndDrawing();
     }
 

@@ -30,6 +30,7 @@ class Render {
 		void			storeMoistureNoise(void);
 		void			elevationToRender();
 		Color			whichBiome(const float e, const float m);
+		void			drawTerrain(void);
 
 		std::vector<float>		elevationMap;
 		std::vector<float>		moistureMap;

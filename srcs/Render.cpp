@@ -81,6 +81,7 @@ void	Render::storeElevationNoise(void) {
 				d = 1.0f - (1.0f - pow(nx, 2)) * (1.0f - pow(ny, 2));
 				e = (e + (this->islandFactor - d)) / 2.0f;	
 			}
+			e = roundf(e * 32) / 32; // Tanaka Style
 			if (e < OCEAN_THRESHOLD) e = OCEAN_THRESHOLD - 0.01f; // Flat ocean
 			this->elevationMap[y*h+x] = e;
 		}
@@ -141,4 +142,22 @@ void	Render::elevationToRender(void) {
 					0.0f - lerp(this->_minHeight, this->_maxHeight, this->elevationMap[y*h+x]), 
 					(float)y * this->_scl
 			};
+}
+
+void	Render::drawTerrain(void) {
+	Vector3	v[4];
+
+	for (int y = 0 ; y < this->_height - 1; y++) {
+		for (int x = 0 ; x < this->_width - 1; x++) {
+			v[0] = this->render[y*this->_height+x];
+			v[1] = this->render[y*this->_height+x+1];
+			v[2] = this->render[(y+1)*this->_height+x];
+			v[3] = this->render[(y+1)*this->_height+x+1];
+			//DrawTriangleStrip3D(v, 4, \
+			//	r.whichBiome(r.elevationMap[y*r._height+x], r.moistureMap[y*r._height+x]));
+			unsigned char e = lerp(0, 255, this->elevationMap[y*this->_height+x]);
+			Color c = {e, e, e, 255};
+			DrawTriangleStrip3D(v, 4, c);
+		}
+	}
 }
