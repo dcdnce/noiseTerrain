@@ -18,6 +18,7 @@ namespace Gui {
 		guiValues["seed"] = r.seed;
 		guiValues["islandFactor"] = r.islandFactor;
 		guiValues["islandFactorToggle"] = r.islandFactorToggle;
+		guiValues["redistribution"] = r.redistribution;
 		return (guiValues);
 	}
 
@@ -57,6 +58,10 @@ namespace Gui {
 		if (GuiDropdownBox((Rectangle){100,140,150,15}, dropdownBox.c_str(), &r.noiseTypeIndex, dropDown000))
 			dropDown000 = !dropDown000;
 
+		guiValues["redistribution"] = GuiSlider((Rectangle){100,160,150,15}, "Redistribution val", \
+			TextFormat("%1.1f", guiValues["redistribution"]), r.redistribution, 1, 10);
+
+
 		if (IsWindowFullscreen())
 			GuiLabel((Rectangle){10,(float)GetMonitorHeight(GetCurrentMonitor())-40,200,15}, tips.c_str());
 		else
@@ -77,13 +82,15 @@ namespace Gui {
 				|| guiValues["octaves"] != r.octaves \
 				|| guiValues["seed"] != r.seed \
 				|| guiValues["islandFactor"] != r.islandFactor \
-				|| guiValues["islandFactorToggle"] != r.islandFactorToggle) {
+				|| guiValues["islandFactorToggle"] != r.islandFactorToggle \
+				|| guiValues["redistribution"] != r.redistribution) {
 			r.frequency = guiValues["frequency"];
 			guiValues["noiseTypeIndex"] = r.noiseTypeIndex;
 			guiValues["octaves"] = r.octaves;
 			guiValues["seed"] = r.seed;
 			r.islandFactor = guiValues["islandFactor"];
 			r.islandFactorToggle = guiValues["islandFactorToggle"];
+			r.redistribution = guiValues["redistribution"];
 
 			r.refreshNoises();
 			r.storeElevationNoise();

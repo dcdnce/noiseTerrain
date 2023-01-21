@@ -10,6 +10,7 @@ Render::Render(void) {
 
 		this->islandFactor = 0.5f;
 		this->islandFactorToggle = false;
+		this->redistribution = 2.f;
 		this->seed = 42;
 		this->frequency = 0.008f;
 		this->octaves = 5;
@@ -74,14 +75,14 @@ void	Render::storeElevationNoise(void) {
 	for (int y = 0 ; y < h; y++) {
 		for (int x = 0 ; x < w; x++) {
 			e = (this->elevationNoise.GetNoise((float)x, (float)y) + 1.0f) * 0.5f;
-			e = pow(e * 1.2f, 2.2f); //Redistribution
+			e = pow(e * 1.2f, this->redistribution); //Redistribution
 			if (this->islandFactorToggle) { // Square bump function
 				nx = 2.0f * x / w - 1.0f;
 				ny = 2.0f * y / h - 1.0f;
 				d = 1.0f - (1.0f - pow(nx, 2)) * (1.0f - pow(ny, 2));
 				e = (e + (this->islandFactor - d)) / 2.0f;	
 			}
-			e = roundf(e * 32) / 32; // Tanaka Style
+			//e = roundf(e * 32) / 32; // Tanaka Style
 			if (e < OCEAN_THRESHOLD) e = OCEAN_THRESHOLD - 0.01f; // Flat ocean
 			this->elevationMap[y*h+x] = e;
 		}
@@ -154,9 +155,10 @@ void	Render::drawTerrain(void) {
 				whichBiome(elevationMap[y*_h+x], moistureMap[y*_h+x]));
 			// unsigned char e = lerp(0, 255, this->elevationMap[y*this->_h+x]);
 			// Color c = {e, e, e, 255};
-			// DrawTriangleStrip3D(v, 4, c);
 			// if (elevationMap[y*_h+x] <= OCEAN_THRESHOLD)
 			// 	DrawTriangleStrip3D(v, 4, OCEAN);
+			// else
+			// 	DrawTriangleStrip3D(v, 4, c);
 		}
 	}
 }

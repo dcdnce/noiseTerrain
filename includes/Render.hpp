@@ -20,6 +20,7 @@ class Render {
 		std::vector<std::string>	noiseTypeNames;
 		float						islandFactor;
 		bool						islandFactorToggle;
+		float						redistribution;
 
 		Render(void);
 		~Render(void);
