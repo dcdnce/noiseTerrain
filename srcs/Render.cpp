@@ -150,13 +150,13 @@ void	Render::drawTerrain(void) {
 			v[1] = this->render[y*_w+x+1];
 			v[2] = this->render[(y+1)*_w+x];
 			v[3] = this->render[(y+1)*_w+x+1];
-			// DrawTriangleStrip3D(v, 4, \
-			// 	whichBiome(elevationMap[y*_h+x], moistureMap[y*_h+x]));
-			unsigned char e = lerp(0, 255, this->elevationMap[y*this->_h+x]);
-			Color c = {e, e, e, 255};
-			DrawTriangleStrip3D(v, 4, c);
-			if (elevationMap[y*_h+x] <= OCEAN_THRESHOLD)
-				DrawTriangleStrip3D(v, 4, OCEAN);
+			DrawTriangleStrip3D(v, 4, \
+				whichBiome(elevationMap[y*_h+x], moistureMap[y*_h+x]));
+			// unsigned char e = lerp(0, 255, this->elevationMap[y*this->_h+x]);
+			// Color c = {e, e, e, 255};
+			// DrawTriangleStrip3D(v, 4, c);
+			// if (elevationMap[y*_h+x] <= OCEAN_THRESHOLD)
+			// 	DrawTriangleStrip3D(v, 4, OCEAN);
 		}
 	}
 }
