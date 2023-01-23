@@ -65,7 +65,10 @@ int main(void)
 		UpdateCamera(&camera);
 		checkEvents();	
 		BeginDrawing();
-			ClearBackground(SKYBLUE);
+			unsigned char e = 255.f - 255.f * OCEAN_THRESHOLD;
+			Color c = {e, e, e, 255};
+			ClearBackground(c);
+			// ClearBackground(OCEAN);
 			BeginMode3D(camera);
 				r.drawTerrain();	
 			EndMode3D();

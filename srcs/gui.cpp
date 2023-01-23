@@ -42,7 +42,7 @@ namespace Gui {
 			valueBox000 = !valueBox000;
 
 		guiValues["maxHeight"] = GuiSlider((Rectangle){100,30,150,15}, "Elevation scale", \
-			TextFormat("%2.5f", guiValues["maxHeight"]), r._maxHeight, 0, 4);
+			TextFormat("%2.5f", guiValues["maxHeight"]), r._maxHeight, 0, 10);
 
 		guiValues["islandFactorToggle"] = GuiCheckBox((Rectangle){100,50,20,15}, "Toggle SquareBump", guiValues["islandFactorToggle"]);
 
@@ -52,7 +52,7 @@ namespace Gui {
 		GuiSpinner((Rectangle){100,100,150,15}, "Noise octaves ", &r.octaves, 1, 10, false);
 
 		guiValues["frequency"] = GuiSlider((Rectangle){100,120,150,15}, "Noise frequency", \
-			TextFormat("%1.10f", guiValues["frequency"]), r.frequency, 0.0f, 0.03f);
+			TextFormat("%1.10f", guiValues["frequency"]), r.frequency, 0.0f, 0.05f);
 			
 		GuiLabel((Rectangle){40,140,100,15}, "Noise type");
 		if (GuiDropdownBox((Rectangle){100,140,150,15}, dropdownBox.c_str(), &r.noiseTypeIndex, dropDown000))

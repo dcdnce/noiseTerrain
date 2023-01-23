@@ -1,12 +1,14 @@
 #include "Render.hpp"
+#define RAYMATH_IMPLEMENTATION
+#include "raymath.h"
 
 Render::Render(void) {
 		std::cout << "Render constructor called" << std::endl;
-		this->_w = 800;
-		this->_h = 800;
-		this->_res = .01f;
+		this->_w = 400;
+		this->_h = 400;
+		this->_res = .1f;
 		this->_minHeight = 0;
-		this->_maxHeight = 1;
+		this->_maxHeight = 5;
 
 		this->islandFactor = 0.5f;
 		this->islandFactorToggle = false;
@@ -142,8 +144,22 @@ void	Render::elevationToRender(void) {
 			};
 }
 
+float	Render::flatShading(Vector3 *v) {
+	Vector3 light_dir = {1, 1, 0};
+	float	i;
+
+	Vector3	n = Vector3CrossProduct(Vector3Subtract(v[2], v[0]), Vector3Subtract(v[1], v[0]));
+	n = Vector3Normalize(n);
+	i = Vector3DotProduct(n, light_dir);
+	if (i < 0) i = 0;
+	if (i > 1.f) i = 1;
+	return (i);
+}
+
 void	Render::drawTerrain(void) {
 	Vector3	v[4];
+	Color	c;
+	float	intensity;
 
 	for (int y = 0 ; y < _h - 1; y++) {
 		for (int x = 0 ; x < _w - 1; x++) {
@@ -151,14 +167,27 @@ void	Render::drawTerrain(void) {
 			v[1] = this->render[y*_w+x+1];
 			v[2] = this->render[(y+1)*_w+x];
 			v[3] = this->render[(y+1)*_w+x+1];
-			DrawTriangleStrip3D(v, 4, \
-				whichBiome(elevationMap[y*_h+x], moistureMap[y*_h+x]));
-			// unsigned char e = lerp(0, 255, this->elevationMap[y*this->_h+x]);
-			// Color c = {e, e, e, 255};
+
+			/* Normal */
+			intensity = flatShading(v);
+			c = whichBiome(elevationMap[y*_h+x], moistureMap[y*_h+x]);
+			c.r *= intensity;
+			c.g *= intensity;
+			c.b *= intensity;
+			DrawTriangleStrip3D(v, 4, c);
+
+			/* Niveau de gris */
+			// unsigned char e = lerp(255, 0, this->elevationMap[y*this->_h+x]);
+			// c = {e, e, e, 255};
+			// if (this->elevationMap[y*_h+x] > OCEAN_THRESHOLD) {
+			// 	c.r *= i;
+			// 	c.g *= i;
+			// 	c.b *= i;
+			// }
 			// if (elevationMap[y*_h+x] <= OCEAN_THRESHOLD)
 			// 	DrawTriangleStrip3D(v, 4, OCEAN);
 			// else
-			// 	DrawTriangleStrip3D(v, 4, c);
+			// DrawTriangleStrip3D(v, 4, c);
 		}
 	}
 }

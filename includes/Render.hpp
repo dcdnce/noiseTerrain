@@ -32,6 +32,7 @@ class Render {
 		void			elevationToRender();
 		Color			whichBiome(const float e, const float m);
 		void			drawTerrain(void);
+		float			flatShading(Vector3 *v);
 
 		std::vector<float>		elevationMap;
 		std::vector<float>		moistureMap;
